@@ -1,4 +1,5 @@
-import { Actor, CheerioCrawler } from 'crawlee'; // Correct import
+import { CheerioCrawler } from 'crawlee';
+import { Actor } from 'apify'; // Correct import for Actor
 
 await Actor.init();
 
@@ -18,7 +19,7 @@ const crawler = new CheerioCrawler({
             }
 
             // 2. Make the API request
-            const apiResponse = await Apify.utils.request({ // Use the already available Apify object
+            const apiResponse = await Apify.utils.request({
                 url: 'https://ngxgroup.com/wp-admin/admin-ajax.php',
                 method: 'POST',
                 headers: {
