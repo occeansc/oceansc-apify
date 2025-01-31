@@ -1,9 +1,12 @@
 {
-  "name": "oceansc-apify",
+  "name": "ocean-sc-ngx",
   "version": "1.0.0",
   "main": "./src/main.js",
+  "scripts": {
+    "start": "node ./src/main.js"
+  },
   "dependencies": {
-    "apify": "3.2.6",
-    "cheerio": "1.0.0-rc.12"
+    "apify": "3.5.3",
+    "cheerio": "1.0.0"
   }
 }
