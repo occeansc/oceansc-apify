@@ -1,4 +1,4 @@
-FROM node:18-bullseye-slim # Use a supported Node.js base image with Debian Bullseye
+FROM node:18-bullseye-slim  # NO BACKSLASH HERE
 
 USER 0
 
