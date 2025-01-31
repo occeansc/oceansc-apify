@@ -1,8 +1,13 @@
-FROM node:18-bullseye-slim  # NO BACKSLASH HERE
+FROM node:18-bullseye-slim
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 USER 0
 
-RUN apt-get update && apt-get install -y gosu \
+RUN set -e; \
+    apt-get update && \
+    apt-get install -y \
+    gosu \
     gconf-service \
     libasound2 \
     libatk1.0-0 \
@@ -48,8 +53,10 @@ RUN mkdir -p /home/node/.cache/puppeteer && chown -R node:node /home/node/.cache
 
 USER node
 
-COPY . ./
+WORKDIR /usr/src/app  # Set WORKDIR *BEFORE* COPY
 
-RUN npm install --quiet --only=prod --no-optional && (npm list || true)
+COPY . .
+
+RUN npm install --quiet --only=prod --no-optional && npm list || true
 
 RUN chmod +x /usr/src/app/src/main.js
