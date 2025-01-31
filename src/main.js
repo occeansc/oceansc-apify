@@ -7,7 +7,6 @@ await Actor.init();
 const crawler = new PuppeteerCrawler({
     async requestHandler({ page, request, crawler }) {
         try {
-            // Access the browser pool and set launch options
             crawler.browserPool.launchOptions.args = ['--no-sandbox', '--disable-setuid-sandbox'];
             crawler.browserPool.launchOptions.executablePath = '/usr/bin/chromium-browser'; // Or /usr/bin/chromium if needed
 
@@ -76,7 +75,10 @@ const crawler = new PuppeteerCrawler({
 
 
         } catch (error) {
-            console.error('Error during scraping:', error);
+            console.error('Error during scraping:', error.message); // Include error message
+            if (error.stack) {
+                console.error('Error stack:', error.stack);      // Include error stack trace
+            }
         }
     },
 });
