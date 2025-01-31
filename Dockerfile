@@ -1,6 +1,6 @@
 FROM apify/actor-node-puppeteer:latest
 
-USER root  # Switch to root user before installing packages
+USER 0  # Switch to root user (numeric ID is more reliable)
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
