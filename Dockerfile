@@ -1,5 +1,7 @@
 FROM apify/actor-node-puppeteer:latest
 
+USER root  # Switch to root user before installing packages
+
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 # Install any additional dependencies needed (Jake's suggested dependencies)
@@ -44,6 +46,8 @@ RUN apt-get update && apt-get install -y \
 
 # Find Chromium path (Jake's suggestion) - Uncomment for debugging
 # RUN which chromium
+
+USER node # Switch back to the 'node' user (important!)
 
 # Copy your project files
 COPY . ./
