@@ -1,13 +1,9 @@
 FROM apify/actor-node-puppeteer:latest
 
-# Install gosu for secure user switching
-RUN apt-get update && apt-get install -y gosu
-
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-
-# Install system dependencies as root
+# Install gosu and dependencies using a single RUN command and root privileges
 USER 0
-RUN apt-get update && apt-get install -y \
+
+RUN apt-get update && apt-get install -y gosu \
     gconf-service \
     libasound2 \
     libatk1.0-0 \
@@ -50,9 +46,7 @@ RUN which chromium-browser || which chromium
 
 RUN mkdir -p /home/node/.cache/puppeteer && chown -R node:node /home/node/.cache
 
-# Switch to non-root user using gosu
 USER node
-RUN gosu node
 
 COPY . ./
 
