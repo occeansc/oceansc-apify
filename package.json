@@ -7,8 +7,9 @@
     "start": "node ./src/main.js"
   },
   "dependencies": {
-    "apify": "3.2.6",  
+    "apify": "3.2.6",
     "cheerio": "^1.0.0-rc.12", 
-    "crawlee": "^3.12.1"      
+    "crawlee": "^3.12.2", 
+    "puppeteer": "^21.3.0" 
   }
 }
