@@ -5,11 +5,16 @@ import cheerio from 'cheerio';
 await Actor.init();
 
 const crawler = new PuppeteerCrawler({
+    launchOptions: {
+        executablePath: '/usr/bin/chromium-browser', // Or try '/usr/bin/chromium' if this doesn't work
+        // Other launch options if needed (e.g., headless: true if not already set by Apify)
+    },
     async requestHandler({ page, request }) {
         try {
             await page.goto('https://ngxgroup.com/exchange/data/equities-price-list/');
 
-            // Wait for the table to load (adjust timeout if needed)
+            // ... (Rest of the code remains exactly the same as before)
+            // Wait for the table to load
             await page.waitForSelector('table.table-responsive');
 
             // Select "All" from the dropdown
@@ -21,9 +26,9 @@ const crawler = new PuppeteerCrawler({
                 console.warn('Dropdown element not found.');
             }
 
-            // **CRITICAL CHANGE: Get HTML from Puppeteer and then load Cheerio**
-            const html = await page.content();  // Get the rendered HTML from Puppeteer
-            const $ = cheerio.load(html);       // Load Cheerio with the rendered HTML
+            // CRITICAL CHANGE: Get HTML from Puppeteer and then load Cheerio
+            const html = await page.content();
+            const $ = cheerio.load(html);
 
             // Now, use Cheerio to find the wdtNonce (and update the regex if needed)
             const scriptTag = $('script', 'body').filter(function() {
@@ -37,7 +42,6 @@ const crawler = new PuppeteerCrawler({
                 throw new Error('Could not find wdtNonce');
             }
 
-            // ... (Rest of the code to make the API request and push data remains the same)
             const apiResponse = await Apify.utils.request({
                 url: 'https://ngxgroup.com/wp-admin/admin-ajax.php',
                 method: 'POST',
@@ -69,7 +73,6 @@ const crawler = new PuppeteerCrawler({
             } else {
                 console.error('Invalid or missing data in API response:', apiResponse);
             }
-
 
         } catch (error) {
             console.error('Error during scraping:', error);
