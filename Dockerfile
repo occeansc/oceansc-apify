@@ -4,6 +4,9 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 USER 0
 
+# Add the Debian Backports repository (for Chromium)
+RUN echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-free" >> /etc/apt/sources.list
+
 RUN set -e; \
     apt-get update && \
     apt-get install -y \
@@ -44,7 +47,7 @@ RUN set -e; \
     lsb-release \
     xdg-utils \
     wget \
-    chromium-browser \
+    chromium-browser -t bullseye-backports \ # Install Chromium from backports
     && rm -rf /var/lib/apt/lists/*
 
 RUN which chromium-browser || which chromium
@@ -53,7 +56,7 @@ RUN mkdir -p /home/node/.cache/puppeteer && chown -R node:node /home/node/.cache
 
 USER node
 
-WORKDIR /usr/src/app  # Set WORKDIR *BEFORE* COPY
+WORKDIR /usr/src/app
 
 COPY . .
 
