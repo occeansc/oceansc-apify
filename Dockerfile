@@ -1,10 +1,7 @@
 FROM apify/actor-node-puppeteer:latest
 
-USER 0  # Switch to root user (numeric ID is more reliable)
-
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
-# Install any additional dependencies needed (Jake's suggested dependencies)
 RUN apt-get update && apt-get install -y \
     gconf-service \
     libasound2 \
@@ -41,19 +38,17 @@ RUN apt-get update && apt-get install -y \
     fonts-liberation \
     lsb-release \
     xdg-utils \
-    wget && \
-    rm -rf /var/lib/apt/lists/*
+    wget \
+    && rm -rf /var/lib/apt/lists/*
 
-# Find Chromium path (Jake's suggestion) - Uncomment for debugging
-# RUN which chromium
+RUN which chromium-browser || which chromium
 
-USER node # Switch back to the 'node' user (important!)
+RUN mkdir -p /home/node/.cache/puppeteer && chown -R node:node /home/node/.cache
 
-# Copy your project files
+USER node 
+
 COPY . ./
 
-# Install project dependencies
 RUN npm install --quiet --only=prod --no-optional && (npm list || true)
 
-# Set correct permissions (Important for some environments)
-RUN chmod +x /usr/src/app/src/main.js # Or the path to your main script.
+RUN chmod +x /usr/src/app/src/main.js
