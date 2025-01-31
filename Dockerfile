@@ -1,6 +1,5 @@
 FROM node:18-bullseye-slim # Use a supported Node.js base image with Debian Bullseye
 
-# Install gosu and dependencies using a single RUN command and root privileges
 USER 0
 
 RUN apt-get update && apt-get install -y gosu \
@@ -40,7 +39,7 @@ RUN apt-get update && apt-get install -y gosu \
     lsb-release \
     xdg-utils \
     wget \
-    chromium-browser \ # Install Chromium directly from Debian repos
+    chromium-browser \
     && rm -rf /var/lib/apt/lists/*
 
 RUN which chromium-browser || which chromium
