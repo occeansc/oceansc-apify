@@ -1,6 +1,6 @@
 import { Actor } from 'apify';
 import { PuppeteerCrawler } from 'crawlee';
-import cheerio from 'cheerio'; // Import cheerio
+import cheerio from 'cheerio';
 
 await Actor.init();
 
@@ -10,37 +10,66 @@ const crawler = new PuppeteerCrawler({
             await page.goto('https://ngxgroup.com/exchange/data/equities-price-list/');
 
             // Wait for the table to load (adjust timeout if needed)
-            await page.waitForSelector('table.table-responsive'); // Or a more specific selector
+            await page.waitForSelector('table.table-responsive');
 
-            // Select "All" from the dropdown (Ocean's crucial point)
-            const selectElement = await page.$('select[name="latestdisclosuresEquities_length"]'); // Select by name
+            // Select "All" from the dropdown
+            const selectElement = await page.$('select[name="latestdisclosuresEquities_length"]');
             if (selectElement) {
-                await selectElement.select('-1'); // Select "-1" for "All"
-                await page.waitForTimeout(5000); // Wait for data refresh (adjust as needed)
+                await selectElement.select('-1');
+                await page.waitForTimeout(5000); // Wait for data refresh
             } else {
                 console.warn('Dropdown element not found.');
             }
 
-            // Extract data using Cheerio (after the table is fully loaded)
-            const $ = cheerio.load(await page.content()); // Use page.content()
+            // **CRITICAL CHANGE: Get HTML from Puppeteer and then load Cheerio**
+            const html = await page.content();  // Get the rendered HTML from Puppeteer
+            const $ = cheerio.load(html);       // Load Cheerio with the rendered HTML
 
-            const stockData = [];
-            $('tr').each((i, row) => {
-                const cells = $(row).find('td');
-                if (cells.length > 0) {
-                    const symbol = $(cells[0]).text().trim();
-                    const price = $(cells[1]).text().trim();
-                    if (symbol && price) {
-                        stockData.push({
-                            symbol,
-                            price,
-                        });
-                    }
-                }
+            // Now, use Cheerio to find the wdtNonce (and update the regex if needed)
+            const scriptTag = $('script', 'body').filter(function() {
+                return $(this).text().includes('wdtNonce');
+            }).text();
+
+            const nonceMatch = scriptTag.match(/wdtNonce\s*=\s*['"]([a-f0-9]+)['"]/); // Update regex if needed
+            const wdtNonce = nonceMatch ? nonceMatch[1] : null;
+
+            if (!wdtNonce) {
+                throw new Error('Could not find wdtNonce');
+            }
+
+            // ... (Rest of the code to make the API request and push data remains the same)
+            const apiResponse = await Apify.utils.request({
+                url: 'https://ngxgroup.com/wp-admin/admin-ajax.php',
+                method: 'POST',
+                headers: {
+                    'User-Agent': 'Mozilla/5.0',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                data: {
+                    action: 'get_wd_table',
+                    table_id: '31',
+                    wdtNonce: wdtNonce,
+                },
+                timeoutSecs: 30,
+                json: true, // Automatically parse the JSON response
             });
 
-            await Actor.pushData(stockData);
-            console.log(`Scraped ${stockData.length} items.`);
+            // 3. Extract and push the data
+            if (apiResponse && apiResponse.data && apiResponse.columns) {
+                const stockData = apiResponse.data.map(item => {
+                    const dataItem = {};
+                    apiResponse.columns.forEach((col, index) => {
+                        dataItem[col.title] = item[index];
+                    });
+                    return dataItem;
+                });
+
+                await Actor.pushData(stockData);
+
+            } else {
+                console.error('Invalid or missing data in API response:', apiResponse);
+            }
+
 
         } catch (error) {
             console.error('Error during scraping:', error);
