@@ -1,56 +1,46 @@
-import { CheerioCrawler } from 'crawlee';
-import { Actor } from 'apify'; // Correct import for Actor
+import { Actor } from 'apify';
+import { PuppeteerCrawler } from 'crawlee';
+import cheerio from 'cheerio'; // Import cheerio
 
 await Actor.init();
 
-const crawler = new CheerioCrawler({
-    async requestHandler({ $, request }) {
+const crawler = new PuppeteerCrawler({
+    async requestHandler({ page, request }) {
         try {
-            // 1. Get the wdtNonce
-            const scriptTag = $('script', 'body').filter(function() {
-                return $(this).text().includes('wdtNonce');
-            }).text();
+            await page.goto('https://ngxgroup.com/exchange/data/equities-price-list/');
 
-            const nonceMatch = scriptTag.match(/wdtNonce\s*=\s*['"]([a-f0-9]+)['"]/);
-            const wdtNonce = nonceMatch ? nonceMatch[1] : null;
+            // Wait for the table to load (adjust timeout if needed)
+            await page.waitForSelector('table.table-responsive'); // Or a more specific selector
 
-            if (!wdtNonce) {
-                throw new Error('Could not find wdtNonce');
+            // Select "All" from the dropdown (Ocean's crucial point)
+            const selectElement = await page.$('select[name="latestdisclosuresEquities_length"]'); // Select by name
+            if (selectElement) {
+                await selectElement.select('-1'); // Select "-1" for "All"
+                await page.waitForTimeout(5000); // Wait for data refresh (adjust as needed)
+            } else {
+                console.warn('Dropdown element not found.');
             }
 
-            // 2. Make the API request
-            const apiResponse = await Apify.utils.request({
-                url: 'https://ngxgroup.com/wp-admin/admin-ajax.php',
-                method: 'POST',
-                headers: {
-                    'User-Agent': 'Mozilla/5.0',
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-                data: {
-                    action: 'get_wd_table',
-                    table_id: '31',
-                    wdtNonce: wdtNonce,
-                },
-                timeoutSecs: 30,
-                json: true, // Automatically parse the JSON response
+            // Extract data using Cheerio (after the table is fully loaded)
+            const $ = cheerio.load(await page.content()); // Use page.content()
+
+            const stockData = [];
+            $('tr').each((i, row) => {
+                const cells = $(row).find('td');
+                if (cells.length > 0) {
+                    const symbol = $(cells[0]).text().trim();
+                    const price = $(cells[1]).text().trim();
+                    if (symbol && price) {
+                        stockData.push({
+                            symbol,
+                            price,
+                        });
+                    }
+                }
             });
 
-            // 3. Extract and push the data
-            if (apiResponse && apiResponse.data && apiResponse.columns) {
-                const stockData = apiResponse.data.map(item => {
-                    const dataItem = {};
-                    apiResponse.columns.forEach((col, index) => {
-                        dataItem[col.title] = item[index];
-                    });
-                    return dataItem;
-                });
-
-                await Actor.pushData(stockData);
-
-            } else {
-                console.error('Invalid or missing data in API response:', apiResponse);
-            }
-
+            await Actor.pushData(stockData);
+            console.log(`Scraped ${stockData.length} items.`);
 
         } catch (error) {
             console.error('Error during scraping:', error);
