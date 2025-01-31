@@ -3,6 +3,11 @@ FROM apify/actor-node-puppeteer:latest
 # Install gosu and dependencies using a single RUN command and root privileges
 USER 0
 
+# Update sources list with correct Debian 9 (stretch) repositories
+RUN echo "deb http://deb.debian.org/debian stretch main contrib non-free" >> /etc/apt/sources.list \
+    && echo "deb http://security.debian.org/debian-security stretch-updates main contrib non-free" >> /etc/apt/sources.list \
+    && echo "deb http://deb.debian.org/debian stretch-updates main contrib non-free" >> /etc/apt/sources.list
+
 RUN apt-get update && apt-get install -y gosu \
     gconf-service \
     libasound2 \
