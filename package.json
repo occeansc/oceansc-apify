@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "./src/main.js",
   "dependencies": {
-    "apify": "3.2.6",  // Or the latest version from Apify docs
-    "cheerio": "1.0.0-rc.12" // Or the latest Cheerio version from Cheerio docs
+    "apify": "3.2.6",
+    "cheerio": "1.0.0-rc.12"
   }
 }
