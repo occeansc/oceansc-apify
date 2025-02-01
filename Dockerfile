@@ -43,7 +43,9 @@ USER node
 WORKDIR /usr/src/app
 
 COPY . .
-RUN chown -R node:node /usr/src/app /home/node/.npm # Crucial: Fix permissions immediately
+
+# Create .npm directory *before* changing ownership
+RUN mkdir -p /home/node/.npm && chown -R node:node /usr/src/app /home/node/.npm
 
 RUN npm install --quiet --only=prod --no-optional && npm list || true
 
