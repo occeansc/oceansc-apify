@@ -6,7 +6,7 @@ USER 0
 
 RUN echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-free" >> /etc/apt/sources.list
 
-RUN apt-get update && \  # && on the same line as apt-get update
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         chromium -t bullseye-backports \
         fonts-liberation \
@@ -31,8 +31,8 @@ RUN apt-get update && \  # && on the same line as apt-get update
         libxrandr2 \
         libxshmfence1 \
         xdg-utils \
-        && apt-get clean \ # && on the same line as the last package
-        && rm -rf /var/lib/apt/lists/*  # && on the same line as apt-get clean
+        && apt-get clean \
+        && rm -rf /var/lib/apt/lists/*  # No backslash on the last line
 
 RUN which chromium || { echo "Chromium not found!"; exit 1; }
 
