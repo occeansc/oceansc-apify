@@ -11,47 +11,34 @@ RUN echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-f
 RUN apt-get update
 
 # Install dependencies (separate RUN command for better caching) - CRUCIAL CHANGE HERE
-RUN apt-get install -y --no-install-recommends gosu \
-    gconf-service \
+RUN apt-get install -y --no-install-recommends \
+    chromium -t bullseye-backports \ # Correct package name
+    fonts-liberation \
     libasound2 \
+    libatk-bridge2.0-0 \
     libatk1.0-0 \
-    libc6 \
     libcairo2 \
     libcups2 \
     libdbus-1-3 \
-    libexpat1 \
-    libfontconfig1 \
-    libgcc1 \
-    libgconf-2-4 \
-    libgdk-pixbuf2.0-0 \
+    libdrm2 \
+    libgbm1 \
     libglib2.0-0 \
-    libgtk-3-0 \
     libnspr4 \
+    libnss3 \
     libpango-1.0-0 \
-    libpangocairo-1.0-0 \
-    libstdc++6 \
     libx11-6 \
-    libx11-xcb1 \
     libxcb1 \
     libxcomposite1 \
-    libxcursor1 \
     libxdamage1 \
     libxext6 \
     libxfixes3 \
-    libxi6 \
     libxrandr2 \
-    libxrender1 \
-    libxss1 \
-    libxtst6 \
-    ca-certificates \
-    fonts-liberation \
-    lsb-release \
+    libxshmfence1 \
     xdg-utils \
-    wget \
-    chromium-browser -t bullseye-backports \
     && rm -rf /var/lib/apt/lists/*
 
-RUN which chromium-browser || which chromium
+# Verify Chromium installation
+RUN which chromium || (echo "Chromium not found!" && exit 1)
 
 RUN mkdir -p /home/node/.cache/puppeteer && chown -R node:node /home/node/.cache/puppeteer
 
