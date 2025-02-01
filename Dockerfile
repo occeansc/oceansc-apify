@@ -4,15 +4,12 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 USER 0
 
-# Add the Debian Backports repository (for Chromium)
 RUN echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-free" >> /etc/apt/sources.list
 
-# Update package lists (separate RUN command)
 RUN apt-get update
 
-# Install dependencies (separate RUN command for better caching) - CRUCIAL CHANGE HERE
 RUN apt-get install -y --no-install-recommends \
-    chromium -t bullseye-backports \ # Correct package name
+    chromium -t bullseye-backports \
     fonts-liberation \
     libasound2 \
     libatk-bridge2.0-0 \
@@ -37,7 +34,6 @@ RUN apt-get install -y --no-install-recommends \
     xdg-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# Verify Chromium installation
 RUN which chromium || (echo "Chromium not found!" && exit 1)
 
 RUN mkdir -p /home/node/.cache/puppeteer && chown -R node:node /home/node/.cache/puppeteer
