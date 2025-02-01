@@ -53,4 +53,14 @@ RUN apt-get install -y gosu \
 
 RUN which chromium-browser || which chromium
 
-RUN mkdir -p /home/node/.cache/puppeteer
+RUN mkdir -p /home/node/.cache/puppeteer && chown -R node:node /home/node/.cache/puppeteer
+
+USER node
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN npm install --quiet --only=prod --no-optional && npm list || true
+
+RUN chmod +x /usr/src/app/src/main.js
