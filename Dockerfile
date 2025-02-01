@@ -6,8 +6,7 @@ USER 0
 
 RUN echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-free" >> /etc/apt/sources.list
 
-# Combined apt-get update, install, and cleanup in one RUN layer
-RUN apt-get update && \
+RUN apt-get update && \  # && on the same line as apt-get update
     apt-get install -y --no-install-recommends \
         chromium -t bullseye-backports \
         fonts-liberation \
@@ -32,10 +31,9 @@ RUN apt-get update && \
         libxrandr2 \
         libxshmfence1 \
         xdg-utils \
-        && apt-get clean \  # Clean apt cache
-        && rm -rf /var/lib/apt/lists/* # Remove package lists
+        && apt-get clean \ # && on the same line as the last package
+        && rm -rf /var/lib/apt/lists/*  # && on the same line as apt-get clean
 
-# Verify Chromium installation
 RUN which chromium || { echo "Chromium not found!"; exit 1; }
 
 RUN mkdir -p /home/node/.cache/puppeteer && chown -R node:node /home/node/.cache/puppeteer
