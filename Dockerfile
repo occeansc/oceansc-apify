@@ -1,4 +1,4 @@
-# Stage 1: Prepare the files with correct ownership
+# Stage 1: Prepare the files
 FROM node:18-bullseye-slim AS builder
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
@@ -43,17 +43,17 @@ USER node
 
 WORKDIR /usr/src/app
 
+# Copy everything EXCEPT .git!  (Use .dockerignore)
 COPY . .
 
 RUN mkdir -p /home/node/.npm
 
-# Change ownership of everything in /usr/src/app *before* the final copy
-RUN chown -R node:node /usr/src/app /home/node/.npm
+# REMOVE THIS LINE:  It's the source of the problem!
+# RUN chown -R node:node /usr/src/app /home/node/.npm  <--- REMOVE THIS
 
 # Stage 2: The final image
 FROM node:18-bullseye-slim
 
-# Copy only the correctly owned files from the builder stage
 COPY --from=builder /usr/src/app /usr/src/app
 COPY --from=builder /home/node/.cache/puppeteer /home/node/.cache/puppeteer
 COPY --from=builder /home/node/.npm /home/node/.npm
