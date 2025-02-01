@@ -32,7 +32,7 @@ RUN apt-get update && \
         libxshmfence1 \
         xdg-utils \
         && apt-get clean \
-        && rm -rf /var/lib/apt/lists/* > /install.log 2>&1  # Log all output
+        && rm -rf /var/lib/apt/lists/* > /install.log 2>&1
 
 RUN which chromium || { echo "Chromium not found!"; exit 1; }
 
@@ -43,6 +43,7 @@ USER node
 WORKDIR /usr/src/app
 
 COPY . .
+RUN chown -R node:node /usr/src/app /home/node/.npm # Crucial: Fix permissions immediately
 
 RUN npm install --quiet --only=prod --no-optional && npm list || true
 
