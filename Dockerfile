@@ -4,11 +4,14 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 USER 0
 
+# Add the Debian Backports repository (for Chromium)
 RUN echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-free" >> /etc/apt/sources.list
 
+# Update package lists (separate RUN command)
 RUN apt-get update
 
-RUN apt-get install -y gosu \
+# Install dependencies (separate RUN command for better caching) - CRUCIAL CHANGE HERE
+RUN apt-get install -y --no-install-recommends gosu \
     gconf-service \
     libasound2 \
     libatk1.0-0 \
