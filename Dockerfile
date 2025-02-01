@@ -7,10 +7,11 @@ USER 0
 # Add the Debian Backports repository (for Chromium)
 RUN echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-free" >> /etc/apt/sources.list
 
-RUN set -e; \
-    apt-get update && \
-    apt-get install -y \
-    gosu \
+# Update package lists (separate RUN command)
+RUN apt-get update
+
+# Install dependencies (separate RUN command for better caching)
+RUN apt-get install -y gosu \
     gconf-service \
     libasound2 \
     libatk1.0-0 \
@@ -47,19 +48,9 @@ RUN set -e; \
     lsb-release \
     xdg-utils \
     wget \
-    chromium-browser -t bullseye-backports \ # Install Chromium from backports
+    chromium-browser -t bullseye-backports \
     && rm -rf /var/lib/apt/lists/*
 
 RUN which chromium-browser || which chromium
 
-RUN mkdir -p /home/node/.cache/puppeteer && chown -R node:node /home/node/.cache/puppeteer
-
-USER node
-
-WORKDIR /usr/src/app
-
-COPY . .
-
-RUN npm install --quiet --only=prod --no-optional && npm list || true
-
-RUN chmod +x /usr/src/app/src/main.js
+RUN mkdir -p /home/node/.cache/puppeteer
