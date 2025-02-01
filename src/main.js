@@ -1,7 +1,7 @@
 import { Actor } from 'apify';
 import { PuppeteerCrawler } from 'crawlee';
 import cheerio from 'cheerio';
-import Ajv from 'ajv'; // For schema validation (optional, but recommended)
+import Ajv from 'ajv';
 
 await Actor.init();
 
@@ -9,12 +9,14 @@ await Actor.init();
 const CONFIG = {
     baseUrl: process.env.NGX_BASE_URL || 'https://ngxgroup.com/exchange/data/equities-price-list/',
     selectors: {
-        table: process.env.NGX_TABLE_SELECTOR || 'table.table-responsive', // Make selectors configurable
-        lengthSelect: process.env.NGX_LENGTH_SELECT || 'select[name="latestdisclosuresEquities_length"]',
+        table: process.env.NGX_TABLE_SELECTOR || 'table.table-responsive', // Make selectors configurable!
+        lengthSelect: process.env.NGX_LENGTH_SELECT || 'select[name="latestdisclosuresEquities_length"]', // Make selectors configurable!
     },
     retryCount: parseInt(process.env.RETRY_COUNT) || 3,
     retryDelay: parseInt(process.env.RETRY_DELAY) || 5000,
-    apiSchema: { // JSON schema for API response validation (optional, but highly recommended)
+    pageLoadTimeout: parseInt(process.env.PAGE_LOAD_TIMEOUT) || 60000,
+    requestTimeout: parseInt(process.env.REQUEST_TIMEOUT) || 30000,
+    apiSchema: { // JSON schema for API response validation (highly recommended)
         type: 'object',
         properties: {
             data: {
@@ -38,7 +40,7 @@ const CONFIG = {
     },
 };
 
-const ajv = new Ajv(); // Initialize Ajv for schema validation
+const ajv = new Ajv();
 const validateApiResponse = ajv.compile(CONFIG.apiSchema);
 
 // Utility functions
@@ -49,7 +51,7 @@ const extractWdtNonce = ($) => {
         return $(this).text().includes('wdtNonce');
     }).text();
 
-    const nonceMatch = scriptTag.match(/wdtNonce\s*=\s*['"]([a-f0-9]+)['"]/); // Improved regex
+    const nonceMatch = scriptTag.match(/wdtNonce\s*=\s*['"]([a-f0-9]+)['"]/); // Robust regex
     return nonceMatch ? nonceMatch[1] : null;
 };
 
@@ -67,23 +69,24 @@ const fetchStockData = async (wdtNonce, retryCount = 0) => {
                 table_id: '31',
                 wdtNonce,
             },
-            timeoutSecs: 30,
+            timeoutSecs: CONFIG.requestTimeout / 1000, // Timeout in seconds
             json: true,
         });
 
-        if (!validateApiResponse(apiResponse)) { // Schema validation
+        if (!validateApiResponse(apiResponse)) {
             console.error('Invalid API response format:', validateApiResponse.errors);
             throw new Error('Invalid API response format');
         }
         return apiResponse;
 
     } catch (error) {
+        console.error('Error fetching stock data:', error); // More specific error message
         if (retryCount < CONFIG.retryCount) {
-            console.log(`API request failed, attempt ${retryCount + 1}/${CONFIG.retryCount}`);
+            console.log(`API request failed, attempt ${retryCount + 1}/${CONFIG.retryCount}. Retrying in ${CONFIG.retryDelay}ms...`);
             await delay(CONFIG.retryDelay);
             return fetchStockData(wdtNonce, retryCount + 1);
         }
-        throw error; // Re-throw the error after retries fail
+        throw error; // Re-throw after retries fail
     }
 };
 
@@ -92,12 +95,11 @@ const processApiResponse = (response) => {
         const dataItem = {};
         response.columns.forEach((col, index) => {
             const value = item[index];
-            dataItem[col.title] = typeof value === 'string' ? value.trim() : value;
+            dataItem[col.title] = typeof value === 'string' ? value.trim() : value; // Trim strings
         });
         return dataItem;
     });
 };
-
 
 const crawler = new PuppeteerCrawler({
     async requestHandler({ page, request, crawler }) {
@@ -108,17 +110,17 @@ const crawler = new PuppeteerCrawler({
             let navigationAttempts = 0;
             while (navigationAttempts < CONFIG.retryCount) {
                 try {
-                    await page.goto(CONFIG.baseUrl, { timeout: 60000 }); // Add timeout for page.goto
+                    await page.goto(CONFIG.baseUrl, { timeout: CONFIG.pageLoadTimeout });
                     break;
                 } catch (error) {
                     navigationAttempts++;
                     if (navigationAttempts === CONFIG.retryCount) throw error;
-                    console.error(`Page navigation failed, attempt ${navigationAttempts + 1}/${CONFIG.retryCount}. Retrying...`);
+                    console.error(`Page navigation failed, attempt ${navigationAttempts + 1}/${CONFIG.retryCount}. Retrying in ${CONFIG.retryDelay}ms...`);
                     await delay(CONFIG.retryDelay);
                 }
             }
 
-            await page.waitForSelector(CONFIG.selectors.table, { timeout: 60000 }); // Selector timeout
+            await page.waitForSelector(CONFIG.selectors.table, { timeout: CONFIG.pageLoadTimeout });
 
             const selectElement = await page.$(CONFIG.selectors.lengthSelect);
             if (selectElement) {
@@ -141,7 +143,6 @@ const crawler = new PuppeteerCrawler({
 
             await Actor.pushData(stockData);
 
-
         } catch (error) {
             console.error('Crawler error:', {
                 message: error.message,
@@ -152,7 +153,7 @@ const crawler = new PuppeteerCrawler({
         }
     },
     maxRequestRetries: 3,
-    requestHandlerTimeoutSecs: 60, // Timeout for the request handler itself
+    requestHandlerTimeoutSecs: 60,
 });
 
 try {
