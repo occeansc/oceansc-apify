@@ -32,7 +32,7 @@ RUN apt-get update && \
         libxshmfence1 \
         xdg-utils \
         && apt-get clean \
-        && rm -rf /var/lib/apt/lists/*  # No backslash on the last line
+        && rm -rf /var/lib/apt/lists/* > /install.log 2>&1  # Log all output
 
 RUN which chromium || { echo "Chromium not found!"; exit 1; }
 
