@@ -1,4 +1,5 @@
-FROM node:18-bullseye-slim
+# Stage 1: Prepare the files with correct ownership
+FROM node:18-bullseye-slim AS builder
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
@@ -44,8 +45,22 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-# Create .npm directory *before* changing ownership
-RUN mkdir -p /home/node/.npm && chown -R node:node /usr/src/app /home/node/.npm
+RUN mkdir -p /home/node/.npm
+
+# Change ownership of everything in /usr/src/app *before* the final copy
+RUN chown -R node:node /usr/src/app /home/node/.npm
+
+# Stage 2: The final image
+FROM node:18-bullseye-slim
+
+# Copy only the correctly owned files from the builder stage
+COPY --from=builder /usr/src/app /usr/src/app
+COPY --from=builder /home/node/.cache/puppeteer /home/node/.cache/puppeteer
+COPY --from=builder /home/node/.npm /home/node/.npm
+
+USER node
+
+WORKDIR /usr/src/app
 
 RUN npm install --quiet --only=prod --no-optional && npm list || true
 
