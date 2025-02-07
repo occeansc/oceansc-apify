@@ -1,4 +1,40 @@
+.git
 node_modules
+*.log
+scraper-errors.log  # Or whatever your error log filename is
+backups
+.env
 .DS_Store
-npm-debug.log
-yarn-error.log
+__pycache__
+*.pyc
+.vscode
+.idea
+*.swp
+*~
+# If you have any large files that shouldn't be in the repo
+large_file.zip
+another_big_file.tar.gz
+
+# Docker-related
+.dockerignore
+
+# Testing-related (if you have these)
+coverage
+*.test.js.snap
+
+# OS-specific files
+Thumbs.db
+
+# Package manager-specific (if you use these)
+package-lock.json  # If you use npm - sometimes you *do* want to commit this
+yarn.lock       # If you use yarn - sometimes you *do* want to commit this
+pnpm-lock.yaml  # If you use pnpm - sometimes you *do* want to commit this
+
+# Environment-specific (adjust as needed)
+.env.local
+.env.development
+.env.production
+
+# Temporary files or directories
+tmp/
+temp/

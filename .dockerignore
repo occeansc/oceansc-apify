@@ -1,6 +1,17 @@
-node_modules
 .git
-.vscode
+node_modules
 *.log
-*.json  // If you don't want to include JSON files in the image
-dist     // If you have a dist directory and are copying it specifically
+scraper-errors.log  # Or whatever your error log filename is
+backups
+.env
+.DS_Store
+__pycache__
+*.pyc
+.vscode
+.idea
+*.swp
+*~
+# If you have any large files that shouldn't be in the image
+large_file.zip
+another_big_file.tar.gz
+# Add any other files or directories that should be excluded
