@@ -1,0 +1,16 @@
+{
+  "name": "ocean-sc-ngx",
+  "version": "1.0.0",
+  "description": "Web scraper for NGX data",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "crawlee": "latest",
+    "puppeteer-core": "^24.2.0",
+    "winston": "^3.11.0"
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "usableSessionsCount": 2,
+  "retiredSessionsCount": 0,
+  "sessions": [
+    {
+      "id": "session_fvW9WQGv3x",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.0",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-02-07T14:21:53.133Z",
+      "createdAt": "2025-02-07T13:31:53.133Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_ZPT4a92KWJ",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.0",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": [
+          {
+            "key": "cookielawinfo-checkbox-non-necessary",
+            "value": "yes",
+            "expires": "2026-02-07T13:32:00.000Z",
+            "domain": "ngxgroup.com",
+            "path": "/",
+            "hostOnly": true,
+            "creation": "2025-02-07T13:32:02.884Z",
+            "lastAccessed": "2025-02-07T13:32:02.884Z"
+          },
+          {
+            "key": "cookielawinfo-checkbox-necessary",
+            "value": "yes",
+            "expires": "2026-02-07T13:32:00.000Z",
+            "domain": "ngxgroup.com",
+            "path": "/",
+            "hostOnly": true,
+            "creation": "2025-02-07T13:32:02.886Z",
+            "lastAccessed": "2025-02-07T13:32:02.886Z"
+          },
+          {
+            "key": "_ga",
+            "value": "GA1.1.739412942.1738935117",
+            "expires": "2026-03-14T13:31:56.640Z",
+            "domain": "ngxgroup.com",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-02-07T13:32:02.886Z",
+            "lastAccessed": "2025-02-07T13:32:02.886Z"
+          },
+          {
+            "key": "_ga_RYLQQ539EW",
+            "value": "GS1.1.1738935116.1.0.1738935116.0.0.0",
+            "expires": "2026-03-14T13:31:56.639Z",
+            "domain": "ngxgroup.com",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-02-07T13:32:02.886Z",
+            "lastAccessed": "2025-02-07T13:32:02.886Z"
+          }
+        ]
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-02-07T14:21:53.139Z",
+      "createdAt": "2025-02-07T13:31:53.139Z",
+      "usageCount": 2,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+	"id": "qIfCGWuYiwhOlLc",
+	"json": "{\"id\":\"qIfCGWuYiwhOlLc\",\"url\":\"https://ngxgroup.com/exchange/data/equities-price-list/\",\"loadedUrl\":\"https://ngxgroup.com/exchange/data/equities-price-list/\",\"uniqueKey\":\"https://ngxgroup.com/exchange/data/equities-price-list\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2025-02-07T13:32:07.806Z\"}",
+	"method": "GET",
+	"orderNo": null,
+	"retryCount": 0,
+	"uniqueKey": "https://ngxgroup.com/exchange/data/equities-price-list",
+	"url": "https://ngxgroup.com/exchange/data/equities-price-list/"
+}

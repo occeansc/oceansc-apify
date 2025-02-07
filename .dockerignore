@@ -1,5 +1,6 @@
-.git
 node_modules
-.DS_Store
-npm-debug.log
-yarn-error.log
+.git
+.vscode
+*.log
+*.json  // If you don't want to include JSON files in the image
+dist     // If you have a dist directory and are copying it specifically
