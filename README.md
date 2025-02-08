@@ -1,2 +1,2 @@
-# oceansc-apify
-Oceansc Apify Actor
+# oceansc-ng
+Oceansc Ng Actor
