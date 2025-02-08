@@ -3,9 +3,9 @@
   "retiredSessionsCount": 0,
   "sessions": [
     {
-      "id": "session_KfkNQehBxh",
+      "id": "session_6s1yRzPSem",
       "cookieJar": {
-        "version": "tough-cookie@5.1.0",
+        "version": "tough-cookie@5.1.1",
         "storeType": "MemoryCookieStore",
         "rejectPublicSuffixes": true,
         "enableLooseMode": false,
@@ -16,16 +16,16 @@
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-02-07T18:09:16.716Z",
-      "createdAt": "2025-02-07T17:19:16.716Z",
+      "expiresAt": "2025-02-08T07:13:18.828Z",
+      "createdAt": "2025-02-08T06:23:18.828Z",
       "usageCount": 0,
       "maxUsageCount": 50,
       "errorScore": 0
     },
     {
-      "id": "session_OPD1PErBU1",
+      "id": "session_C5aSrLxz9P",
       "cookieJar": {
-        "version": "tough-cookie@5.1.0",
+        "version": "tough-cookie@5.1.1",
         "storeType": "MemoryCookieStore",
         "rejectPublicSuffixes": true,
         "enableLooseMode": false,
@@ -35,50 +35,72 @@
           {
             "key": "cookielawinfo-checkbox-non-necessary",
             "value": "yes",
-            "expires": "2026-02-07T17:19:23.000Z",
+            "expires": "2026-02-08T06:23:26.000Z",
             "domain": "ngxgroup.com",
             "path": "/",
             "hostOnly": true,
-            "creation": "2025-02-07T17:19:26.662Z",
-            "lastAccessed": "2025-02-07T17:19:26.662Z"
+            "creation": "2025-02-08T06:23:29.198Z",
+            "lastAccessed": "2025-02-08T06:23:29.198Z"
           },
           {
             "key": "cookielawinfo-checkbox-necessary",
             "value": "yes",
-            "expires": "2026-02-07T17:19:23.000Z",
+            "expires": "2026-02-08T06:23:26.000Z",
             "domain": "ngxgroup.com",
             "path": "/",
             "hostOnly": true,
-            "creation": "2025-02-07T17:19:26.663Z",
-            "lastAccessed": "2025-02-07T17:19:26.663Z"
+            "creation": "2025-02-08T06:23:29.200Z",
+            "lastAccessed": "2025-02-08T06:23:29.200Z"
           },
           {
             "key": "_ga",
-            "value": "GA1.1.1210009284.1738948760",
-            "expires": "2026-03-14T17:19:19.951Z",
+            "value": "GA1.1.1787154593.1738995802",
+            "expires": "2026-03-15T06:23:22.177Z",
             "domain": "ngxgroup.com",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-02-07T17:19:26.663Z",
-            "lastAccessed": "2025-02-07T17:19:26.663Z"
+            "creation": "2025-02-08T06:23:29.201Z",
+            "lastAccessed": "2025-02-08T06:23:29.201Z"
           },
           {
             "key": "_ga_RYLQQ539EW",
-            "value": "GS1.1.1738948759.1.0.1738948759.0.0.0",
-            "expires": "2026-03-14T17:19:19.949Z",
+            "value": "GS1.1.1738995802.1.0.1738995802.0.0.0",
+            "expires": "2026-03-15T06:23:22.176Z",
             "domain": "ngxgroup.com",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-02-07T17:19:26.663Z",
-            "lastAccessed": "2025-02-07T17:19:26.663Z"
+            "creation": "2025-02-08T06:23:29.202Z",
+            "lastAccessed": "2025-02-08T06:23:29.202Z"
+          },
+          {
+            "key": "PHPSESSID",
+            "value": "ghpsogqei35bpjpuh42rq1fe8g",
+            "expires": "2025-02-08T07:13:29.193Z",
+            "domain": "ngxgroup.com",
+            "path": "/",
+            "hostOnly": true,
+            "creation": "2025-02-08T06:23:29.202Z",
+            "lastAccessed": "2025-02-08T06:23:29.202Z"
+          },
+          {
+            "key": "__wpdm_client",
+            "value": "6fb5698bbd950da374d590e82a0f1793",
+            "expires": "2025-02-08T07:13:29.193Z",
+            "domain": "ngxgroup.com",
+            "path": "/",
+            "secure": true,
+            "httpOnly": true,
+            "hostOnly": false,
+            "creation": "2025-02-08T06:23:29.202Z",
+            "lastAccessed": "2025-02-08T06:23:29.202Z"
           }
         ]
       },
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-02-07T18:09:16.724Z",
-      "createdAt": "2025-02-07T17:19:16.724Z",
+      "expiresAt": "2025-02-08T07:13:18.834Z",
+      "createdAt": "2025-02-08T06:23:18.834Z",
       "usageCount": 2,
       "maxUsageCount": 50,
       "errorScore": 0
