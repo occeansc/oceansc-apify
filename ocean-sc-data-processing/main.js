@@ -54,7 +54,7 @@ function processData(data) {
         }
     }
 
-    const overallSentiment = bullishCount > bearishCount ? "Bullish" : (bearishCount > bullishCount ? "Bearish" : "Neutral");
+    const overallMarketSentiment = bullishCount > bearishCount ? "Bullish" : (bearishCount > bullishCount ? "Bearish" : "Neutral");
 
     // --- Volume (Traditional Indicator) ---
     const totalVolume = processedData.reduce((sum, row) => sum + (isNaN(row.volume) ? 0 : row.volume), 0);
@@ -138,11 +138,75 @@ function processData(data) {
         }
     }
 
+    // --- Overall Stock Sentiment ---
+    for (let i = 0; i < processedData.length; i++) {
+        const row = processedData[i];
+        let bullishSignals = 0;
+        let bearishSignals = 0;
+
+        // Price Change
+        if (!isNaN(row.change)) {
+            if (row.change > 0) {
+                bullishSignals++;
+            } else if (row.change < 0) {
+                bearishSignals++;
+            }
+        }
+
+        // Open-to-Close Change
+        if (!isNaN(row.openToCloseChange)) {
+            if (row.openToCloseChange > 0) {
+                bullishSignals++;
+            } else if (row.openToCloseChange < 0) {
+                bearishSignals++;
+            }
+        }
+
+        // Trades/Volume Divergence
+        if (row.tradesVolumeDivergence === "High Trades/Low Volume") {
+            bearishSignals++;
+        } else if (row.tradesVolumeDivergence === "Low Trades/High Volume") {
+            bullishSignals++;
+        }
+
+        // Outlier Stocks
+        if (row.priceOutlier && row.change > 0) {
+            bullishSignals++;
+        } else if (row.priceOutlier && row.change < 0) {
+            bearishSignals++;
+        }
+
+        if (row.volumeOutlier && row.volume > averageVolume) {
+            bullishSignals++;
+        } else if (row.volumeOutlier && row.volume < averageVolume) {
+            bearishSignals++;
+        }
+
+        // Volume Increase with No Change
+        if (row.volumeIncreaseNoChange) {
+            // This could be bullish or bearish, depending on context. Let's consider it neutral for now.
+        }
+
+        // Initial sentiment based on signal combinations
+        if (bullishSignals > bearishSignals) {
+            row.overallStockSentiment = "Bullish";
+        } else if (bearishSignals > bullishSignals) {
+            row.overallStockSentiment = "Bearish";
+        } else {
+            row.overallStockSentiment = "Neutral";
+        }
+
+        // Check for high volume with minimal price change condition
+        if (!isNaN(row.volume) && !isNaN(row.change)) {
+            if (row.volume > 1000000 && Math.abs(row.change) < 0.01) {
+                row.overallStockSentiment = "Volume Bullish";
+            }
+        }
+    }
 
     // --- Add calculated metrics to the data ---
-    processedData.overallSentiment = overallSentiment;
+    processedData.overallMarketSentiment = overallMarketSentiment;
     processedData.totalVolume = totalVolume;
-
 
     return processedData;
 }
@@ -150,5 +214,5 @@ function processData(data) {
 function getMedian(arr) {
     const sorted = arr.slice().sort((a, b) => a - b);
     const mid = Math.floor(sorted.length / 2);
-    return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+    return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
 }
